@@ -4,8 +4,18 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-API_KEY = os.getenv("RAPIDAPI_KEY")
-API_HOST = os.getenv("RAPIDAPI_HOST")
+def get_secret(key):
+    """Reads from Streamlit secrets when deployed, falls back to .env locally."""
+    try:
+        import streamlit as st
+        if key in st.secrets:
+            return st.secrets[key]
+    except Exception:
+        pass
+    return os.getenv(key)
+
+API_KEY = get_secret("RAPIDAPI_KEY")
+API_HOST = get_secret("RAPIDAPI_HOST")
 BASE_URL = f"https://{API_HOST}"
 
 HEADERS = {
